@@ -5,10 +5,10 @@ import (
 	"fmt"
 )
 
-// Encryption is the encryption parameter.
+// Encryption is the rtspEncryption / rtmpEncryption parameter.
 type Encryption int
 
-// supported encryption policies.
+// values.
 const (
 	EncryptionNo Encryption = iota
 	EncryptionOptional
@@ -51,12 +51,13 @@ func (d *Encryption) UnmarshalJSON(b []byte) error {
 		*d = EncryptionStrict
 
 	default:
-		return fmt.Errorf("invalid encryption value: '%s'", in)
+		return fmt.Errorf("invalid encryption: '%s'", in)
 	}
 
 	return nil
 }
 
-func (d *Encryption) unmarshalEnv(s string) error {
-	return d.UnmarshalJSON([]byte(`"` + s + `"`))
+// UnmarshalEnv implements env.Unmarshaler.
+func (d *Encryption) UnmarshalEnv(_ string, v string) error {
+	return d.UnmarshalJSON([]byte(`"` + v + `"`))
 }
